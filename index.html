@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="A free, open-source music theory learning app covering Grades 1–8.">
+<title>Open Music Theory — Grades 1–8</title>
+<style>
+:root{--bg:#f5f7fb;--panel:#fff;--ink:#172033;--muted:#657089;--line:#e1e6ef;--accent:#5b4bdb;--accent2:#eeeaff;--good:#18794e;--bad:#b42318;--shadow:0 10px 30px rgba(27,37,68,.08)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+header{background:linear-gradient(125deg,#29205f,#5b4bdb 65%,#8879f4);color:#fff;padding:42px 20px 35px}
+.hero,main,footer{max-width:1100px;margin:auto}.eyebrow{text-transform:uppercase;letter-spacing:.13em;font-size:.76rem;font-weight:800;opacity:.8}
+h1{font-size:clamp(2rem,5vw,3.4rem);line-height:1.08;margin:.45rem 0 1rem}header p{max-width:700px;margin:0;color:#eeebff}
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}.pill{border:1px solid #ffffff55;border-radius:999px;padding:5px 11px;font-size:.82rem}
+main{padding:25px 18px 55px}.toolbar{display:flex;gap:12px;align-items:end;flex-wrap:wrap;margin-bottom:20px}
+.field{display:grid;gap:6px}label{font-size:.86rem;font-weight:750}select,input,button{font:inherit}select,input{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#fff;color:var(--ink)}button{border:0;border-radius:10px;padding:10px 15px;font-weight:750;cursor:pointer;background:var(--accent);color:white}button:hover{filter:brightness(.96)}button.secondary{background:#f0efff;color:#3f32aa;border:1px solid #d9d3ff}button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid #aaa0ff;outline-offset:2px}
+.layout{display:grid;grid-template-columns:250px minmax(0,1fr);gap:20px;align-items:start}.sidebar,.content,.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
+.sidebar{padding:15px;position:sticky;top:14px}.sidebar h2{font-size:1rem;margin:2px 8px 10px}.grade-list{display:grid;gap:6px}.grade-btn{display:flex;justify-content:space-between;align-items:center;text-align:left;background:transparent;color:var(--ink);border:1px solid transparent;padding:10px 11px}.grade-btn.active{background:var(--accent2);color:#3d31a3;border-color:#d9d2ff}.grade-btn small{color:var(--muted);font-weight:500}
+.content{padding:clamp(17px,3vw,30px);min-width:0}.content h2{margin:.1rem 0 .3rem;font-size:1.7rem}.sub{color:var(--muted);margin-top:0}.topic-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:22px 0}.topic{border:1px solid var(--line);border-radius:12px;padding:15px}.topic h3{font-size:1rem;margin:0 0 5px}.topic p{margin:0;color:var(--muted);font-size:.93rem}.lesson{background:#fafaff;border:1px solid #e7e3ff;border-radius:12px;padding:18px;margin:20px 0}.lesson h3{margin:0 0 8px}.example{font-family:ui-serif,Georgia,serif;font-size:1.25rem;background:#fff;border:1px dashed #c9c2ff;border-radius:9px;padding:12px;margin:12px 0}.quiz{border-top:1px solid var(--line);padding-top:22px;margin-top:24px}.question{font-weight:750;margin:16px 0 10px}.answers{display:grid;gap:8px}.answer{display:flex;align-items:flex-start;gap:9px;text-align:left;background:#fff;color:var(--ink);border:1px solid var(--line);font-weight:550}.answer.correct{border-color:#72c79b;background:#edfff4}.answer.wrong{border-color:#f0a29b;background:#fff2f0}.feedback{min-height:28px;margin:10px 0;color:var(--muted)}.score{font-weight:800;margin:12px 0}.progress{height:8px;border-radius:99px;background:#ececf4;overflow:hidden;margin:8px 0 18px}.progress span{display:block;height:100%;width:0;background:var(--accent);transition:width .2s}
+.note{font-size:.9rem;color:var(--muted)}footer{padding:0 18px 30px;color:var(--muted);font-size:.9rem}footer a{color:#4a3bc2}.hidden{display:none}
+@media(max-width:760px){.layout{grid-template-columns:1fr}.sidebar{position:static}.grade-list{grid-template-columns:repeat(2,minmax(0,1fr))}.topic-grid{grid-template-columns:1fr}.toolbar .field{flex:1;min-width:140px}}
+</style>
+</head>
+<body>
+<header><div class="hero">
+<div class="eyebrow">Free learning resource · Grades 1–8</div>
+<h1>Open Music Theory</h1>
+<p>Learn the building blocks of music, one grade at a time. Explore concise lessons, worked examples and quick quizzes. This independent resource is not affiliated with any examination board.</p>
+<div class="pills"><span class="pill">No account required</span><span class="pill">Works offline</span><span class="pill">Open source · MIT License</span></div>
+</div></header>
+<main>
+<div class="toolbar">
+<div class="field"><label for="gradeSelect">Choose a grade</label><select id="gradeSelect"></select></div>
+<div class="field"><label for="search">Find a topic</label><input id="search" type="search" placeholder="e.g. rhythm, key signatures"></div>
+<button class="secondary" id="resetBtn" type="button">Reset quiz</button>
+</div>
+<div class="layout">
+<aside class="sidebar"><h2>Learning pathway</h2><div class="grade-list" id="gradeList"></div><p class="note">Suggested order: start with Grade 1 and progress when the concepts feel comfortable.</p></aside>
+<section class="content" aria-live="polite">
+<div id="gradeContent"></div>
+</section>
+</div>
+</main>
+<footer>
+<p><strong>Open Music Theory</strong> · Free to use, copy, modify and redistribute under the MIT License. This is an independent study aid; syllabuses differ between ABRSM, Trinity and other boards. Check your chosen board’s current syllabus for exact exam requirements.</p>
+<p>Built as a single HTML file with no external libraries, tracking, adverts or account system.</p>
+</footer>
+<script>
+const curriculum = [
+{grade:1,title:"Foundations",summary:"Get comfortable reading the staff and recognising basic sounds and symbols.",topics:[
+["The stave and clefs","The five lines and four spaces form the stave. A treble clef usually marks higher notes; a bass clef usually marks lower notes."],
+["Note names","The musical alphabet uses A, B, C, D, E, F and G, then repeats. Treble-clef lines from bottom to top are E–G–B–D–F."],
+["Basic note values","A semibreve lasts 4 crotchet beats, a minim lasts 2, a crotchet lasts 1 and a quaver lasts half a beat in a simple 4/4 context."],
+["Time signatures","The top number tells how many beats or counted units are in a bar. The bottom number identifies the note-value unit."],
+["Rests and dynamics","Rests indicate silence. Dynamics such as p (piano) and f (forte) tell a performer to play softly or loudly."]
+],lesson:"In 4/4 time, a bar can contain four crotchet beats. A minim plus two crotchets adds up to 2 + 1 + 1 = 4 beats.",example:"Minim (2) + crotchet (1) + crotchet (1) = 4 beats"},
+{grade:2,title:"Building fluency",summary:"Read more notes, understand intervals and recognise common rhythmic patterns.",topics:[
+["Bass clef","Bass-clef lines from bottom to top are G–B–D–F–A; spaces are A–C–E–G."],
+["Intervals","An interval describes the distance between two notes. Count both note names to name a generic interval: C to E is a third."],
+["Dotted notes","A dot adds half of the note’s original value. A dotted minim lasts 3 crotchet beats."],
+["Ties and slurs","A tie joins the duration of two notes of the same pitch. A slur groups different notes into a smooth phrase."],
+["Tempo and articulation","Tempo describes speed (for example, Allegro). Staccato is short and detached; legato is smooth and connected."]
+],lesson:"A dot adds half the note’s value. A dotted crotchet is one crotchet plus one quaver: 1 + 0.5 = 1.5 beats.",example:"Dotted crotchet = 1½ crotchet beats"},
+{grade:3,title:"Scales and key signatures",summary:"Understand major scales, accidentals and the relationship between keys.",topics:[
+["Major scale pattern","A major scale follows the semitone pattern tone–tone–semitone–tone–tone–tone–semitone."],
+["Sharps and flats","A sharp raises a note by a semitone; a flat lowers it by a semitone. A natural cancels an earlier sharp or flat."],
+["Key signatures","Sharps or flats written after a clef usually indicate the key signature and apply to the relevant note names throughout the staff."],
+["Tones and semitones","A semitone is the smallest step in standard Western equal temperament; two semitones make a tone."],
+["Simple intervals","Identify intervals by counting letter names first, then consider the quality (major, minor, perfect, augmented or diminished) as appropriate."]
+],lesson:"The C major scale uses the white-note sequence C–D–E–F–G–A–B–C. Its semitones are E–F and B–C.",example:"C major: C · D · E · F · G · A · B · C"},
+{grade:4,title:"Minor keys and musical structure",summary:"Explore minor scales, triads, transposition and phrase structure.",topics:[
+["Natural minor","The natural minor scale follows tone–semitone–tone–tone–semitone–tone–tone."],
+["Relative major and minor","Relative major and minor keys share a key signature. A minor is the relative minor of C major."],
+["Triads","A triad is built from a root, a third and a fifth. Chord quality depends on the intervals between its notes."],
+["Transposition","Transposition moves a melody or passage to a different pitch level while preserving its interval relationships."],
+["Phrases and cadences","A phrase is a musical idea. Cadences create points of arrival or pause, somewhat like punctuation."]
+],lesson:"A minor triad contains A–C–E. From A to C is a minor third, and from A to E is a perfect fifth.",example:"A minor triad: A · C · E"},
+{grade:5,title:"Harmony and musical language",summary:"Develop a more confident understanding of chords, ornaments and musical forms.",topics:[
+["Harmonic function","Chords can create stability, movement or tension. In a major key, I, IV and V are common tonic, subdominant and dominant functions."],
+["Primary triads","In C major, the primary triads are I = C major, IV = F major and V = G major."],
+["Compound time","In compound metres such as 6/8, beats are commonly grouped in threes and each beat divides into three smaller units."],
+["Ornaments","Ornaments decorate a melody. Common examples include trills, turns, mordents and acciaccaturas."],
+["Musical forms","Binary form has two main sections (AB); ternary form has three (ABA). Repetition and contrast help shape structure."]
+],lesson:"Roman numerals describe chords built on scale degrees. In C major, the V chord is G–B–D and often creates a pull back to C major.",example:"C major: I (C) → IV (F) → V (G) → I (C)"},
+{grade:6,title:"Advanced harmony and analysis",summary:"Connect harmony, modulation, ornamentation and stylistic analysis.",topics:[
+["Inversions","A triad is in root position when its root is the lowest note. First inversion places the third in the bass; second inversion places the fifth in the bass."],
+["Dominant seventh","A dominant seventh chord contains root, major third, perfect fifth and minor seventh; G–B–D–F is V7 in C major."],
+["Modulation","Modulation is a change of key. A pivot chord may belong to both the original key and the destination key."],
+["Chromatic notes","Chromatic notes lie outside the prevailing diatonic collection and can add colour, tension or directional pull."],
+["Texture","Monophonic texture has one melodic line; homophonic texture has melody with accompaniment; polyphonic texture combines independent lines."]
+],lesson:"In C major, G7 (G–B–D–F) contains a tritone between B and F. This tension commonly resolves to C and E.",example:"G7 → C major: B tends to rise to C; F tends to fall to E"},
+{grade:7,title:"Deeper tonal understanding",summary:"Study extended chords, enharmonic spelling, larger forms and harmonic direction.",topics:[
+["Secondary dominants","A secondary dominant temporarily emphasises a chord other than the tonic. In C major, D7 can lead strongly to G."],
+["Diminished seventh chords","A fully diminished seventh chord is built from stacked minor thirds and is highly symmetrical, so it can resolve in several directions."],
+["Enharmonic equivalence","On a standard keyboard, F-sharp and G-flat sound the same in equal temperament, but their spellings can serve different harmonic purposes."],
+["Chromatic harmony","Chromatic mediants and altered chords introduce notes outside the home key to create colour or dramatic shifts."],
+["Large-scale form","Sonata-style structures often include exposition, development and recapitulation, with themes presented, transformed and revisited."]
+],lesson:"In C major, D7 is not the diatonic ii chord (Dm). It is V7 of G, often written V7/V, and can intensify the move toward the dominant.",example:"D7 (D–F♯–A–C) → G (G–B–D)"},
+{grade:8,title:"Analysis, counterpoint and advanced concepts",summary:"Bring together harmonic analysis, voice leading, counterpoint and stylistic interpretation.",topics:[
+["Voice leading","Good voice leading considers the movement of each part, avoiding unnecessary leaps and managing tendency tones and parallel perfect intervals according to style."],
+["Diatonic and chromatic harmony","Diatonic harmony uses notes from the governing scale; chromatic harmony includes pitches or chords outside that collection."],
+["Counterpoint","Counterpoint combines independent melodic lines. Each line should make musical sense while contributing to the whole."],
+["Neapolitan and augmented-sixth chords","These chromatic predominant chords often intensify movement toward the dominant. Their spelling and resolution help identify their function."],
+["Analysis and interpretation","A strong analysis connects details—motifs, harmony, texture, form and dynamics—to a convincing account of how a piece works."]
+],lesson:"In C minor, a Neapolitan sixth is commonly based on D-flat major (D♭–F–A♭), usually in first inversion, and often moves toward a dominant harmony.",example:"C minor context: N⁶ → V → i (a common harmonic pattern)"}
+];
+const quizzes = [
+[{q:"How many crotchet beats does a minim usually last?",a:["1","2","3","4"],correct:1,why:"A minim is worth two crotchet beats."},{q:"Which notes are the treble-clef lines from bottom to top?",a:["F–A–C–E–G","E–G–B–D–F","G–B–D–F–A","A–C–E–G–B"],correct:1,why:"The treble-clef lines are E, G, B, D and F."},{q:"What does p mean in dynamics?",a:["Loud","Very loud","Soft","Fast"],correct:2,why:"p stands for piano, meaning soft."}],
+[{q:"What does a dot add to a note?",a:["Its full value","Half its original value","One beat in every case","A semitone"],correct:1,why:"A dot adds half the original duration."},{q:"Which notes are bass-clef lines from bottom to top?",a:["E–G–B–D–F","G–B–D–F–A","A–C–E–G–B","C–E–G–B–D"],correct:1,why:"Bass-clef lines are G, B, D, F and A."},{q:"A slur most commonly indicates that notes should be…",a:["Detached","Played louder","Connected smoothly","Repeated twice"],correct:2,why:"A slur groups notes into a smooth phrase."}],
+[{q:"Where are the semitones in a C major scale?",a:["C–D and F–G","D–E and A–B","E–F and B–C","C–B and G–A"],correct:2,why:"The semitones are E–F and B–C."},{q:"What does a natural sign do?",a:["Raises a note by a tone","Cancels a previous sharp or flat","Lowers every note in the bar","Changes the tempo"],correct:1,why:"A natural sign cancels an applicable sharp or flat."},{q:"How many sharps are in G major?",a:["None","One","Two","Three"],correct:1,why:"G major has one sharp: F-sharp."}],
+[{q:"What is the relative minor of C major?",a:["E minor","D minor","A minor","C minor"],correct:2,why:"A minor shares C major's key signature."},{q:"Which notes form an A minor triad?",a:["A–C–E","A–C♯–E","A–D–F","A–B–E"],correct:0,why:"A minor contains A, C and E."},{q:"What is transposition?",a:["Changing a passage's pitch level while preserving intervals","Playing only staccato","Changing 4/4 to 3/4","Removing all accidentals"],correct:0,why:"Transposition moves the music to another pitch level."}],
+[{q:"In C major, which chord is the dominant triad?",a:["F major","A minor","G major","C major"],correct:2,why:"The dominant chord is built on scale degree 5: G–B–D."},{q:"In 6/8, beats are commonly grouped in…",a:["Twos","Threes","Fours","Six separate strong beats"],correct:1,why:"6/8 is compound duple; two main beats each divide into three."},{q:"Which form has an ABA layout?",a:["Binary","Ternary","Rondo only","Fugue"],correct:1,why:"Ternary form has three main sections, commonly ABA."}],
+[{q:"Which notes make a G7 chord?",a:["G–B–D–F","G–B♭–D–F","G–C–D–F","G–B–D–F♯"],correct:0,why:"A dominant seventh uses a major triad plus a minor seventh."},{q:"What is first inversion of a triad?",a:["Root in the bass","Third in the bass","Fifth in the bass","Seventh in the bass"],correct:1,why:"First inversion places the third of the chord in the bass."},{q:"What is modulation?",a:["A change of key","A change of volume only","A repeated rhythm","A type of rest"],correct:0,why:"Modulation is a change from one key to another."}],
+[{q:"In C major, D7 often functions as…",a:["The tonic","V7/V, leading toward G","The subdominant","A natural minor chord"],correct:1,why:"D7 is the dominant seventh of G, the dominant key/chord in C."},{q:"F-sharp and G-flat are examples of…",a:["Octaves","Enharmonic equivalents","Perfect fifths","Diatonic triads"],correct:1,why:"They can sound the same in equal temperament but are spelled differently."},{q:"Which section commonly transforms themes in sonata form?",a:["Development","Coda only","Introduction only","Recapitulation only"],correct:0,why:"The development section typically explores and transforms themes."}],
+[{q:"What is counterpoint?",a:["Combining independent melodic lines","A type of dynamics marking","A key signature","A note duration"],correct:0,why:"Counterpoint is the combination of independent melodic lines."},{q:"A Neapolitan sixth is commonly based on which chord in C minor?",a:["D-flat major","E-flat major","G major","A-flat minor"],correct:0,why:"The Neapolitan is commonly a major chord on the lowered second scale degree, usually in first inversion."},{q:"What is voice leading concerned with?",a:["Only the loudest part","How individual musical parts move between chords","Only the time signature","The instrument's brand"],correct:1,why:"Voice leading studies the movement of individual voices or parts."}]
+];
+let selectedGrade=1,answersState={},scoreState={};
+const $=id=>document.getElementById(id);
+function init(){
+ curriculum.forEach(c=>{let o=document.createElement("option");o.value=c.grade;o.textContent=`Grade ${c.grade} — ${c.title}`;$("gradeSelect").appendChild(o)});
+ $("gradeSelect").addEventListener("change",e=>selectGrade(Number(e.target.value)));
+ $("search").addEventListener("input",render);
+ $("resetBtn").addEventListener("click",()=>{answersState[selectedGrade]={};scoreState[selectedGrade]=0;render()});
+ render();
+}
+function selectGrade(n){selectedGrade=n;$("gradeSelect").value=n;render()}
+function render(){
+ const c=curriculum[selectedGrade-1],query=$("search").value.trim().toLowerCase();
+ $("gradeList").innerHTML=curriculum.map(x=>`<button type="button" class="grade-btn ${x.grade===selectedGrade?'active':''}" data-grade="${x.grade}"><span>Grade ${x.grade}<br><small>${x.title}</small></span><span aria-hidden="true">›</span></button>`).join("");
+ document.querySelectorAll("[data-grade]").forEach(b=>b.addEventListener("click",()=>selectGrade(Number(b.dataset.grade))));
+ const topics=c.topics.filter(t=>(t[0]+" "+t[1]).toLowerCase().includes(query));
+ const quiz=quizzes[selectedGrade-1],saved=answersState[selectedGrade]||{};
+ let answered=Object.keys(saved).length,correct=Object.values(saved).filter(x=>x.correct).length;
+ $("gradeContent").innerHTML=`<div class="eyebrow" style="color:var(--accent)">Grade ${c.grade} · Learning guide</div>
+ <h2>${c.title}</h2><p class="sub">${c.summary}</p>
+ <div class="progress" aria-label="Quiz progress"><span style="width:${answered/quiz.length*100}%"></span></div>
+ <div class="topic-grid">${topics.map(t=>`<article class="topic"><h3>${t[0]}</h3><p>${t[1]}</p></article>`).join("")||'<p>No matching topics in this grade. Try a different search.</p>'}</div>
+ <div class="lesson"><h3>Worked example</h3><p>${c.lesson}</p><div class="example">${c.example}</div></div>
+ <div class="quiz"><h3>Quick quiz</h3><p class="sub">Answer the questions to check your understanding. Your score stays in this page only.</p>
+ ${quiz.map((q,i)=>`<div class="question">${i+1}. ${q.q}</div><div class="answers">${q.a.map((a,j)=>{let chosen=saved[i],cls=chosen?(j===q.correct?'correct':chosen.choice===j?'wrong':''):"";return `<button type="button" class="answer ${cls}" data-q="${i}" data-a="${j}" ${chosen?'disabled':''}><span>${String.fromCharCode(65+j)}.</span><span>${a}</span></button>`}).join("")}</div><div class="feedback" id="feedback-${i}">${saved[i]?(saved[i].correct?'Correct. ': 'Not quite. ')+q.why:''}</div>`).join("")}
+ <div class="score">${answered===quiz.length?`Final score: ${correct} / ${quiz.length}`:`Answered ${answered} of ${quiz.length}`}</div>
+ <button type="button" class="secondary" id="nextGrade">${selectedGrade<8?'Continue to Grade '+(selectedGrade+1):'Back to Grade 1'}</button></div>`;
+ document.querySelectorAll("[data-q]").forEach(b=>b.addEventListener("click",()=>answer(Number(b.dataset.q),Number(b.dataset.a))));
+ $("nextGrade").addEventListener("click",()=>selectGrade(selectedGrade===8?1:selectedGrade+1));
+}
+function answer(qi,choice){
+ const q=quizzes[selectedGrade-1][qi];if(!answersState[selectedGrade])answersState[selectedGrade]={};
+ if(answersState[selectedGrade][qi])return;
+ answersState[selectedGrade][qi]={choice,correct:choice===q.correct};render();
+}
+init();
+</script>
+</body>
+</html>
